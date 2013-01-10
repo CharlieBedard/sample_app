@@ -50,6 +50,14 @@ describe User do
     it { should_not be_valid }
   end
 
+# Verify that the email address will be set to lower case before saving to the DB...
+ describe "when email address set to lower case" do
+    let(:email_set_to_mixed_case) { "AbCdEfG@anyHWERE.CoM" }
+    @user.email = email_set_to_mixed_case
+    @user.save
+    @user.reload.email.should == email_set_to_mixed_case.downcase
+  end
+
 # Using regex, check that valid and invalid email addresses are processed correctly...
   describe "when email format is invalid" do
     it "should be invalid" do
@@ -120,7 +128,7 @@ describe User do
       let(:user_for_invalid_password) { found_user.authenticate("invalid") }
 
       it { should_not == user_for_invalid_password }
-      specify { user_for_invalid_password be_false }
+      specify { user_for_invalid_password.should be_false }
     end
   end
 end

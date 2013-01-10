@@ -45,9 +45,20 @@ describe User do
   end
 
 # Verify that a name greater than 50 charatcters is rejected...
- describe "when name is too long" do
+  describe "when name is too long" do
     before { @user.name = "a" * 51 }
     it { should_not be_valid }
+  end
+
+# Verify that the email address will be set to lower case before saving to the DB...
+  describe "when email address set to lower case" do
+    let(:email_set_to_mixed_case) { "AbCdEfG@anyHWERE.CoM" }
+
+    it "should be saved in lower case" do
+      @user.email = email_set_to_mixed_case
+      @user.save
+      @user.reload.email.should == email_set_to_mixed_case.downcase
+    end
   end
 
 # Using regex, check that valid and invalid email addresses are processed correctly...
