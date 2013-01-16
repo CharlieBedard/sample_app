@@ -32,7 +32,8 @@ class User < ActiveRecord::Base
             uniqueness: { case_sensitive: false })
 
 # Verify that a password has been supplied and meets minimum length of 6 characters
-  validates(:password, presence: true, length: { minimum: 6 })
+#  validates(:password, presence: true, length: { minimum: 6 })
+  validates(:password, length: { minimum: 6 })
 
 # Verify that a password_confirnmation has been supplied...
   validates(:password_confirmation, presence: true)
