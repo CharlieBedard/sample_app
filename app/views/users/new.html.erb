@@ -4,7 +4,7 @@
 <div class="row">
   <div class="span6 offset3">
     <%= form_for(@user) do |f| %>
-      <!-- If this page is being refresehd due to bad input from a previous -->
+      <!-- If this page is being refreshed due to bad input from a previous -->
       <!--   entry then this code will print out the set of errors          -->
       <%= render '/shared/error_messages'%>
       <%= f.label :name %>

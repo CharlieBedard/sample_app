@@ -8,11 +8,12 @@
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  password_digest :string(255)
+#	 remember_token  :string(255)
 #
 
 class User < ActiveRecord::Base
   attr_accessible(:email, :name, :password, :password_confirmation)
-
+  
 # Rails has a complex method that uses "password_digest" in the DB table to hold and
 #   authenticate a user's password using BCrypt. This method checks both the password
 #   and password_confirmation fields of the object to see that they match and adds the
@@ -21,6 +22,8 @@ class User < ActiveRecord::Base
 
 # Before committing to DB, normalize all email address to lowercase...
   before_save { self.email.downcase! }
+# ... and create its persistent remember_token
+  before_save :create_remember_token
 
 # Verify that the name is not blank and is not oversized
   validates(:name, presence: true, length: { maximum: 50 })
@@ -37,5 +40,12 @@ class User < ActiveRecord::Base
 
 # Verify that a password_confirnmation has been supplied...
   validates(:password_confirmation, presence: true)
+
+# Define private methods used only by this model
+private
+	def create_remember_token
+		# Create a unique string as the persistent token using built-in library
+		self.remember_token = SecureRandom.urlsafe_base64
+	end
 
 end

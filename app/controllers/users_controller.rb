@@ -21,9 +21,12 @@ class UsersController < ApplicationController
   # Got a POST request with entries set for the new user. Validate and use them if OK.
     @user = User.new(params[:user])
     if @user.save
+      # Before sending the user off to their profiole page, also sign them in...
+      sign_in(@user)
+
       # Here on successful. Already saved in the DB. Set the "Welcome message"...
       flash[:success] = "Welcome to the Sample App"
-
+      
       # Now, redirect to the Profile page to display the new user...
       redirect_to @user
     else

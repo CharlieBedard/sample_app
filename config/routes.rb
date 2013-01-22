@@ -1,9 +1,15 @@
 SampleApp::Application.routes.draw do
+  # Define the paths to the User model
   resources :users
+  
+  # Define the paths for the Sessions resource
+  resources :sessions, only: [:new, :create, :destroy]
 
   root to: 'static_pages#home'
 
-  match '/signup', to: 'users#new'
+  match '/signup',  to: 'users#new'
+  match '/signin',  to: 'sessions#new'
+  match '/signout', to: 'sessions#destroy', via: :delete
 
   match '/help', to: 'static_pages#help'
   match '/about', to: 'static_pages#about'

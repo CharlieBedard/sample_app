@@ -28,6 +28,8 @@ describe User do
   it { should respond_to(:password_digest) }
   it { should respond_to(:password) }
   it { should respond_to(:password_confirmation) }
+  # :remember_token is used for user state that persists across browser sessions
+  it { should respond_to(:remember_token) }
   it { should respond_to(:authenticate) }
 
 # The User model should have "validates" for its attributes so check that it is working ...
@@ -134,4 +136,11 @@ describe User do
       specify { user_for_invalid_password.should be_false }
     end
   end
+
+# Verify that the remember_token is present...
+  describe "has non-blank" do
+    before { @user.save }
+    its(:remember_token) { should_not be_blank }
+  end
+
 end
