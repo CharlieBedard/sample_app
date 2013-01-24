@@ -1,1 +1,17 @@
-<%= "Nothing to see here. Move along..." %>
+<% provide(:title, 'All users') %>
+<h1>All users</h1>
+
+<%= will_paginate %>
+
+<ul class="users">
+	<!-- The code below is how it would seem "natural" to iterate on an array of users 	-->
+  <!--		<% @users.each do |user| %>																									-->
+  <!--						<%= render user %>																									-->
+  <!--					<% end %>																															-->
+  <!--																																								-->
+  <!-- However, more magic in Rails allows the code below because Rails can infer			-->
+  <!--		@user is a list of User objects and so will automatically iterate over them	-->
+  <%= render @users %>
+</ul>
+
+<%= will_paginate %>

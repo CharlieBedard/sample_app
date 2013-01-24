@@ -8,6 +8,13 @@ gem 'bootstrap-sass', '2.1'
 # Include the bcrypt gem to support strong password encyption...
 gem 'bcrypt-ruby', '3.0.1'
 
+# Include the faker gem to help generate test data...
+gem 'faker', '1.0.1'
+
+# Include the paginate gems for standard pagination operations...
+gem 'will_paginate', '3.0.3'
+gem 'bootstrap-will_paginate', '0.0.6'
+
 group :development, :test do
   gem 'sqlite3', '1.3.5'
   gem 'rspec-rails', '2.11.0'

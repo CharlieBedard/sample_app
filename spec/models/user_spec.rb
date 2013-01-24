@@ -30,15 +30,29 @@ describe User do
   it { should respond_to(:password_confirmation) }
   # :remember_token is used for user state that persists across browser sessions
   it { should respond_to(:remember_token) }
+  it { should respond_to(:admin) }
   it { should respond_to(:authenticate) }
 
 # The User model should have "validates" for its attributes so check that it is working ...
   it { should be_valid }
+  
+# Our test user should not be the admin...
+  it { should_not be_admin }
 
 # Verify that the string attributes are checked for presence...
   describe "when name is not present" do
     before { @user.name = " " }
     it { should_not be_valid }
+  end
+
+# When the admin attribute is set, this should become an admin...
+  describe "with admin attribute set to 'true'" do
+    before do
+    	@user.save!
+    	@user.toggle!(:admin)
+    end
+    
+    it { should be_admin }
   end
 
   describe "when email is not present" do

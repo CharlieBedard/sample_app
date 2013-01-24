@@ -46,6 +46,7 @@ private
 	def create_remember_token
 		# Create a unique string as the persistent token using built-in library
 		self.remember_token = SecureRandom.urlsafe_base64
+#		puts "Created a new TOKEN #{self.name}"
 	end
 
 end
