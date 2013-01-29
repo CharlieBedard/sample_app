@@ -68,7 +68,7 @@ describe "Authentication" do
   				it { should have_selector('title', text: 'Sign in') }
   			end
   		end
-  		
+  	 				
   		context "when attempting to visit a protected page" do	
   			before do
   				visit edit_user_path(user)	# Should cause a redirect to the sigin page
@@ -86,6 +86,23 @@ describe "Authentication" do
   				end
   			end
    		end
+   		
+   		# Here to test microposts authorization. You should only be able to
+  		#		create/destroy your own posts. To check that, you must be signed in
+  		context "in the Microposts controller" do
+  			context "submitting to the create action" do
+  				before { post microposts_path }
+ 					specify { response.should redirect_to(signin_path) }
+  			end
+
+  			context "submitting to the destroy action" do
+  				before do
+  					new_post = FactoryGirl.create(:micropost)
+  					delete micropost_path(new_post)
+  				end
+ 					specify { response.should redirect_to(signin_path) }
+  			end
+  		end
   	end
   	
   	context "as wrong user" do

@@ -8,7 +8,8 @@
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  password_digest :string(255)
-#	 remember_token  :string(255)
+#  remember_token  :string(255)
+#  admin           :boolean          default(FALSE)
 #
 
 class User < ActiveRecord::Base
@@ -19,6 +20,9 @@ class User < ActiveRecord::Base
 #   and password_confirmation fields of the object to see that they match and adds the
 #   authentication to compare the password to the value in the database.
   has_secure_password
+
+# Create the association with the many microposts that are owned by this user
+  has_many :microposts, dependent: :destroy
 
 # Before committing to DB, normalize all email address to lowercase...
   before_save { self.email.downcase! }
@@ -40,6 +44,15 @@ class User < ActiveRecord::Base
 
 # Verify that a password_confirnmation has been supplied...
   validates(:password_confirmation, presence: true)
+
+# Define public methods used by this model
+
+def feed
+# This method returns an array of microposts for the named user using the
+#		"where" method which sends SQL strings to DB
+	Micropost.where("user_id = ?", id)
+end
+
 
 # Define private methods used only by this model
 private

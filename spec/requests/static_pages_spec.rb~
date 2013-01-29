@@ -16,6 +16,29 @@ describe "Static pages" do
     
     it_should_behave_like "all static pages"
     it { should_not have_selector('title', text: " | Home") }
+    
+    context "for signed in users" do
+    	# Signed in users have their microposts listed on their home page
+    	
+    	# First,create a new user...
+    	let(:user) { FactoryGirl.create(:user) }
+    	
+    	# Defore each test, create a couple of new microposts...
+    	before do
+    		FactoryGirl.create(:micropost, user: user, content: "Lorem ipsum" )
+    		FactoryGirl.create(:micropost, user: user, content: "Dolor sit amet" )
+    		sign_in(user)
+    		visit root_path
+    	end
+    	
+    	# OK. Got a new user and some test posts. Verify that user's feed displays them
+    	it "should render the user feed" do
+    		user.feed.each do |item|
+    			page.should have_selector("li##{item.id}", text: item.content)
+    		end
+    	end
+    end
+    
   end
 
   describe "Help page" do
@@ -43,12 +66,10 @@ describe "Static pages" do
   end
 
   it "should have the right links on the layout" do
-    subject { page }
-
     visit root_path
 
     click_link "About"
-    it { should have_selector('title', text: full_title('About Us')) }
+    page.should have_selector('title', text: full_title('About Us'))
     click_link "Help"
     page.should have_selector('title', text: full_title('Help'))
     click_link "Contact"

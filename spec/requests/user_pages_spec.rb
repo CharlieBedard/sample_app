@@ -7,10 +7,20 @@ describe "User pages" do
   # Validate the contents of the User Profile page...
   describe "profile page" do
     let(:user) { FactoryGirl.create(:user) } 
+    let!(:mpost1) { FactoryGirl.create(:micropost, user: user, content: "foo") }
+    let!(:mpost2) { FactoryGirl.create(:micropost, user: user, content: "bar") }
+    
     before { visit user_path(user) }
     
     it { should have_selector('h1',    text: user.name) }
     it { should have_selector('title', text: user.name) }
+  
+  	# These tests are used for micropost display testing on the user's profile page...
+  	context "with microposts" do
+  		it { should have_content(mpost1.content) }
+  		it { should have_content(mpost2.content) }
+  		it { should have_content(user.microposts.count) }
+  	end
   end
 
   # Verify the edit operations on the user's profile page...
@@ -125,7 +135,7 @@ describe "User pages" do
 
    	# And it should list all 30 users...
    	describe "pagination" do
-   		#Create 30 users for each test in this section...
+   		# Create 30 users for each test in this section...
    		before(:all)	{	30.times { FactoryGirl.create(:user) } }
    		after(:all) 	{ User.delete_all }
    		

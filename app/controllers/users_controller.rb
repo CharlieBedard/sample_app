@@ -11,7 +11,7 @@ class UsersController < ApplicationController
   def show
   # Showing a User's profile page for user with ID ":id"...
     @user = User.find(params[:id])
-
+		@microposts = @user.microposts.paginate(page: params[:page])
   end
 
   def index
@@ -34,7 +34,7 @@ class UsersController < ApplicationController
       # Before sending the user off to their profile page, also sign them in...
       sign_in(@user)
 
-      # Here on successful. Already saved in the DB. Set the "Welcome message"...
+      # Here on success. Already saved in the DB. Set the "Welcome message"...
       flash[:success] = "Welcome to the Sample App"
       
       # Now, redirect to the Profile page to display the new user...
@@ -80,22 +80,6 @@ class UsersController < ApplicationController
   	
 	# Private methods go here...
 	private
-		def signed_in_user
-			unless signed_in?
-				# This method redirects to the "Sign in" page of the user is not already
-				#		signed in. Let's remember where we are now so we can send him back
-				#		to this page after signing in...
-				store_location
-			
-				# Redirect to "signin" age...
-			
-				# The more obvious code to redirect is:
-				#		flash[:notice] = "Please sign in"
-				# 	redirect_to signin_utl
-				# However, there is a shortcut for setting flash used in the code below:
-				redirect_to signin_url, notice: "Please sign in"
-			end
-		end
 
 		def correct_user
   		@user=User.find(params[:id])

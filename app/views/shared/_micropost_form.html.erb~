@@ -1,0 +1,9 @@
+<%= form_for(@micropost) do |f| %>
+	<!-- If this page is being refreshed due to bad input from a previous -->
+  <!--   entry then this code will print out the set of errors          -->
+  <%= render '/shared/error_messages', object: f.object %>
+	<div class="field">
+	  <%= f.text_area :content, placeholder: "Compose new micropost..."  %>
+	</div>
+  <%= f.submit "Post", class: "btn btn-large btn-primary" %>
+<% end %>d

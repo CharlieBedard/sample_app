@@ -8,6 +8,8 @@
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  password_digest :string(255)
+#  remember_token  :string(255)
+#  admin           :boolean          default(FALSE)
 #
 
 require 'spec_helper'
@@ -28,18 +30,34 @@ describe User do
   it { should respond_to(:password_digest) }
   it { should respond_to(:password) }
   it { should respond_to(:password_confirmation) }
-  # :remember_token is used for user state that persists across browser sessions
+# :remember_token is used for user state that persists across browser sessions
   it { should respond_to(:remember_token) }
   it { should respond_to(:admin) }
   it { should respond_to(:authenticate) }
-
-# The User model should have "validates" for its attributes so check that it is working ...
+# Check for the microposts method reference (created by the "has_many" relationship)
+	it { should respond_to(:microposts) }
+	
+# The User model should have "validates" for its attributes so check that it is
+#		 working ...
   it { should be_valid }
+  
+# Our test user should not be the admin...
+  it { should_not be_admin }
 
 # Verify that the string attributes are checked for presence...
   describe "when name is not present" do
     before { @user.name = " " }
     it { should_not be_valid }
+  end
+
+# When the admin attribute is set, this should become an admin...
+  describe "with admin attribute set to 'true'" do
+    before do
+    	@user.save!
+    	@user.toggle!(:admin)
+    end
+    
+    it { should be_admin }
   end
 
   describe "when email is not present" do
@@ -144,4 +162,47 @@ describe User do
     its(:remember_token) { should_not be_blank }
   end
 
+# Tests on microposts...
+  describe "micropost associations" do
+    
+    before { @user.save }
+    
+    let!(:older_post) do
+    	FactoryGirl.create(:micropost, user: @user, created_at: 1.day.ago)
+    end
+    
+    let!(:newer_post) do
+    	FactoryGirl.create(:micropost, user: @user, created_at: 1.hour.ago)
+    end
+    
+    # Check that the array is time ordered newest to oldest...
+    it "should have the posts in the correct time order" do
+    	@user.microposts.should == [newer_post, older_post]
+    end
+
+    # Delete a user and verify that their posts are also gone...
+    it "should delete associated microposts" do
+    	saved_posts = @user.microposts.dup		# Copy entire array of posts
+    	@user.destroy													# Kill the user
+    	
+    	saved_posts.should_not be_empty
+    	
+    	saved_posts.each do |post|
+    		# Check in DB to verify there are not there...
+    		Micropost.find_by_id(post.id).should be_nil
+    	end
+    end
+    
+    # Check that we can see our own posts but no one else's posts...
+    it "should only see our posts" do
+    	let(:not_our_post) do
+    		FactoryGirl.create(:micropost, user: FactoryGirl.create(:user))
+    	end
+    	
+    	its(:feed) { should include(older_post) }
+    	its(:feed) { should include(newer_post) }
+    	its(:feed) { should_not include(not_our_post) }
+    end
+    
+  end
 end

@@ -6,7 +6,7 @@
     <%= form_for(@user) do |f| %>
       <!-- If this page is being refreshed due to bad input from a previous -->
       <!--   entry then this code will print out the set of errors          -->
-      <%= render '/shared/error_messages'%>
+      <%= render '/shared/error_messages', object: f.object %>
 
       <%= f.label :name %>
       <%= f.text_field :name %>

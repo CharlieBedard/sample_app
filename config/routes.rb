@@ -1,6 +1,10 @@
 SampleApp::Application.routes.draw do
   # Define the paths to the User model
   resources :users
+
+  # Define the paths to the Microposts model
+  resources :microposts, only: [:create, :destroy]
+
   
   # Define the paths for the Sessions resource
   resources :sessions, only: [:new, :create, :destroy]

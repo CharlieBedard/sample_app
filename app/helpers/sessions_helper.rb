@@ -33,6 +33,23 @@ module SessionsHelper
 		user == current_user
 	end
 
+	def signed_in_user
+		unless signed_in?
+			# This method redirects to the "Sign in" page of the user is not already
+			#		signed in. Let's remember where we are now so we can send him back
+			#		to this page after signing in...
+			store_location
+		
+			# Redirect to "signin" age...
+		
+			# The more obvious code to redirect is:
+			#		flash[:notice] = "Please sign in"
+			# 	redirect_to signin_utl
+			# However, there is a shortcut for setting flash used in the code below:
+			redirect_to signin_url, notice: "Please sign in"
+		end
+	end
+
 	# Define a method to remember the last page we were on so can implement "friendly"
 	#		redirection which sends a user back to their initial requested page after
 	#		correcting an issue such as signing in first.
@@ -46,6 +63,4 @@ module SessionsHelper
 		redirect_to(session[:return_to] || default)
 		session.delete(:return_to)									# Forget the "remembered" page
 	end
-
-
 end
